@@ -191,6 +191,9 @@
   .btn-portada:active{transform:translateY(0)}
   .portada-foot{margin-top:16px;text-align:center;color:rgba(255,255,255,.85);font-size:12px}
   .portada-foot a{color:#fff}
+  /* Revelado progresivo: cada bloque de la portada aparece cuando el anterior queda lleno */
+  .preveal{display:none}
+  .preveal.show{display:block;animation:fadeIn .4s ease}
   .spark{animation:twinkle 2.6s ease-in-out infinite}
   @keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
 
@@ -258,7 +261,7 @@
   <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8z"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
-  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
   <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="M21 2l-9.6 9.6"/><path d="M15.5 7.5L19 11"/><path d="M17.5 5.5L21 9"/></symbol>
   <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></symbol>
   <symbol id="i-package" viewBox="0 0 24 24"><path d="M16.5 9.4l-9-5.19M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></symbol>
@@ -307,7 +310,7 @@
     </g>
   </svg>
   <div class="portada-content">
-    <div class="portada-brand"><svg class="icon icon-sm"><use href="#i-mic"/></svg> Impulso PQP</div>
+    <div class="portada-brand"><svg class="icon icon-sm"><use href="#i-zap"/></svg> Impulso PQP</div>
     <div class="portada-hero">
       <h1>Vamos con impulso,</h1>
       <p>Registra tu activación en el punto de venta, paso a paso.</p>
@@ -315,34 +318,48 @@
     <div class="portada-form" id="portadaForm">
       <div class="portada-err" id="portadaErr">Completa tu nombre, documento, ciudad, PDV y selfie.</div>
 
-      <div class="pinput"><span class="pic"><svg class="icon"><use href="#i-user"/></svg></span><input type="text" id="nombreImpulsador" placeholder="Nombre completo" autocomplete="name"></div>
-      <div class="pinput"><span class="pic"><svg class="icon"><use href="#i-id"/></svg></span><input type="tel" id="cedulaImpulsador" placeholder="Documento / Cédula" inputmode="numeric"></div>
-      <div class="pinput"><span class="pic"><svg class="icon"><use href="#i-phone"/></svg></span><input type="tel" id="telefono" placeholder="Teléfono" inputmode="tel"></div>
-
-      <div class="psel"><span class="pic"><svg class="icon"><use href="#i-pin"/></svg></span>
-        <select id="ciudad"><option value="">Selecciona ciudad</option></select>
-        <input type="text" id="ciudadTexto" placeholder="Escribe la ciudad" style="display:none">
+      <div class="preveal show" id="stgNombre">
+        <div class="pinput"><span class="pic"><svg class="icon"><use href="#i-user"/></svg></span><input type="text" id="nombreImpulsador" placeholder="Nombre completo" autocomplete="name"></div>
       </div>
-      <div class="psel"><span class="pic"><svg class="icon"><use href="#i-box"/></svg></span>
-        <select id="puntoVenta" disabled><option value="">Primero elige ciudad</option></select>
-        <input type="text" id="pdvTexto" placeholder="Escribe el punto de venta" style="display:none">
+
+      <div class="preveal" id="stgCedTel">
+        <div class="pinput"><span class="pic"><svg class="icon"><use href="#i-id"/></svg></span><input type="tel" id="cedulaImpulsador" placeholder="Documento / Cédula" inputmode="numeric"></div>
+        <div class="pinput"><span class="pic"><svg class="icon"><use href="#i-phone"/></svg></span><input type="tel" id="telefono" placeholder="Teléfono" inputmode="tel"></div>
       </div>
-      <div id="alertParamPortada" class="portada-err" style="margin-top:-4px"></div>
 
-      <label class="foto-ingreso" id="fotoIngresoBox">
-        <input type="file" id="fileIngreso" accept="image/*" capture="user" style="display:none">
-        <span class="fi-ic" id="fiIcon"><svg class="icon icon-lg"><use href="#i-camera"/></svg></span>
-        <img class="fi-prev" id="fotoIngresoPrev" style="display:none" alt="">
-        <span class="fi-txt"><b id="fiTitle">Tu selfie</b><span id="fiSub">Toca para tomar la foto (cámara frontal)</span></span>
-      </label>
-
-      <div class="foto-ingreso loc-chip" id="locChipPortada">
-        <span class="fi-ic"><svg class="icon icon-lg"><use href="#i-nav"/></svg></span>
-        <span class="fi-txt"><b id="locTitlePortada">Ubicando...</b><span id="locSubPortada">Obteniendo tu posición GPS</span></span>
+      <div class="preveal" id="stgCiudad">
+        <div class="psel"><span class="pic"><svg class="icon"><use href="#i-pin"/></svg></span>
+          <select id="ciudad"><option value="">Selecciona ciudad</option></select>
+          <input type="text" id="ciudadTexto" placeholder="Escribe la ciudad" style="display:none">
+        </div>
+        <div id="alertParamPortada" class="portada-err" style="margin-top:-4px"></div>
       </div>
-      <button type="button" class="btn btn-outline btn-sm btn-block" id="btnRetryLocPortada" style="display:none;margin:-6px 0 12px;background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.4)" onclick="capturarUbicacion()"><svg class="icon icon-sm"><use href="#i-refresh"/></svg>Reintentar ubicación</button>
 
-      <button class="btn-portada" onclick="comenzar()"><span id="btnComenzarTxt">Comenzar</span> <svg class="icon"><use href="#i-arrowr"/></svg></button>
+      <div class="preveal" id="stgPDV">
+        <div class="psel"><span class="pic"><svg class="icon"><use href="#i-box"/></svg></span>
+          <select id="puntoVenta" disabled><option value="">Primero elige ciudad</option></select>
+          <input type="text" id="pdvTexto" placeholder="Escribe el punto de venta" style="display:none">
+        </div>
+      </div>
+
+      <div class="preveal" id="stgFoto">
+        <label class="foto-ingreso" id="fotoIngresoBox">
+          <input type="file" id="fileIngreso" accept="image/*" capture="user" style="display:none">
+          <span class="fi-ic" id="fiIcon"><svg class="icon icon-lg"><use href="#i-camera"/></svg></span>
+          <img class="fi-prev" id="fotoIngresoPrev" style="display:none" alt="">
+          <span class="fi-txt"><b id="fiTitle">Tu selfie</b><span id="fiSub">Toca para tomar la foto (cámara frontal)</span></span>
+        </label>
+      </div>
+
+      <div class="preveal" id="stgFinal">
+        <div class="foto-ingreso loc-chip" id="locChipPortada">
+          <span class="fi-ic"><svg class="icon icon-lg"><use href="#i-nav"/></svg></span>
+          <span class="fi-txt"><b id="locTitlePortada">Ubicando...</b><span id="locSubPortada">Obteniendo tu posición GPS</span></span>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm btn-block" id="btnRetryLocPortada" style="display:none;margin:-6px 0 12px;background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.4)" onclick="capturarUbicacion()"><svg class="icon icon-sm"><use href="#i-refresh"/></svg>Reintentar ubicación</button>
+
+        <button class="btn-portada" onclick="comenzar()"><span id="btnComenzarTxt">Comenzar</span> <svg class="icon"><use href="#i-arrowr"/></svg></button>
+      </div>
 
       <div class="portada-foot"><a href="#" onclick="abrirRecuperar();return false;">¿Ya iniciaste una gestión? Recupérala con tu código</a></div>
       <div class="portada-foot">Una herramienta de <b style="font-weight:700;letter-spacing:.5px">SYNAPTIC</b></div>
@@ -353,7 +370,7 @@
 <!-- TOPBAR -->
 <header class="topbar">
   <div class="topbar-row">
-    <div class="topbar-logo"><svg class="icon icon-lg"><use href="#i-mic"/></svg></div>
+    <div class="topbar-logo"><svg class="icon icon-lg"><use href="#i-zap"/></svg></div>
     <div class="topbar-brand"><b>Impulso PQP</b><span>Activación y consumo en el PDV</span></div>
     <div class="avatar-bubble" id="avatarBubble" onclick="abrirPersona()" title="Mi información" style="width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.55);overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer">
       <img id="avatarImg" alt="" style="display:none;width:100%;height:100%;object-fit:cover">
@@ -445,10 +462,27 @@
       <div id="vozSi" style="display:none">
         <div class="field-row">
           <div class="field"><label class="label" for="vozNumConsumidores">Nº consumidores atendidos</label><input type="number" id="vozNumConsumidores" class="input" min="0" placeholder="Ej: 12"></div>
-          <div class="field"><label class="label label-req" for="vozPercepcion">Percepción general</label>
-            <select id="vozPercepcion" class="select"><option value="">Seleccionar</option><option>Muy positiva</option><option>Positiva</option><option>Neutra</option><option>Negativa</option><option>Muy negativa</option></select>
+          <div class="field"><label class="label label-req" for="vozConocimientoPrevio">¿Conocían el producto?</label>
+            <select id="vozConocimientoPrevio" class="select"><option value="">Seleccionar</option><option>No lo conocían</option><option>Lo conocían pero no lo habían probado</option><option>Ya lo consumen habitualmente</option></select>
           </div>
         </div>
+        <div class="field"><label class="label label-req" for="vozPercepcion">Percepción general del producto</label>
+          <select id="vozPercepcion" class="select"><option value="">Seleccionar</option><option>Muy positiva</option><option>Positiva</option><option>Neutra</option><option>Negativa</option><option>Muy negativa</option></select>
+        </div>
+        <div class="field-row">
+          <div class="field"><label class="label label-req" for="vozAspectoValorado">Aspecto mejor valorado</label>
+            <select id="vozAspectoValorado" class="select"><option value="">Seleccionar</option><option>Sabor / Calidad</option><option>Precio</option><option>Empaque / Presentación</option><option>Marca / Confianza</option><option>Disponibilidad</option></select>
+          </div>
+          <div class="field"><label class="label" for="vozAspectoObjecion">Aspecto con más objeciones</label>
+            <select id="vozAspectoObjecion" class="select"><option value="">Seleccionar</option><option>Ninguna objeción</option><option>Sabor / Calidad</option><option>Precio</option><option>Empaque / Presentación</option><option>Marca / Confianza</option><option>Disponibilidad</option></select>
+          </div>
+        </div>
+        <div class="field"><label class="label" for="vozCompetenciaMencionada">Producto de la competencia que más mencionan</label><input type="text" id="vozCompetenciaMencionada" class="input" placeholder="Ej: Marca X"></div>
+        <div class="field"><label class="label label-req" for="vozDisposicionRecompra">¿Estarían dispuestos a comprarlo / recomprarlo?</label>
+          <select id="vozDisposicionRecompra" class="select"><option value="">Seleccionar</option><option>Definitivamente sí</option><option>Probablemente sí</option><option>No estoy seguro(a)</option><option>Probablemente no</option><option>Definitivamente no</option></select>
+        </div>
+        <div class="field"><label class="label" for="vozSugerencias">Sugerencias u oportunidades de mejora</label><textarea id="vozSugerencias" class="textarea" placeholder="Lo que más pidieron o sugirieron los consumidores..."></textarea></div>
+        <div class="field-row" style="margin-top:4px"><div class="res-sec-h" style="grid-column:1/-1"><svg class="icon icon-sm"><use href="#i-chat"/></svg>Comentarios puntuales</div></div>
         <div id="listaVoz"></div>
         <button type="button" class="btn btn-soft btn-block" onclick="agregarVoz()"><svg class="icon icon-sm"><use href="#i-plus"/></svg>Agregar comentario</button>
       </div>
@@ -654,6 +688,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let pt; const persistDeb = () => { clearTimeout(pt); pt=setTimeout(persistir, 600); };
   document.addEventListener('input', persistDeb);
   document.addEventListener('change', persistDeb);
+  // Revelado progresivo de la portada: instantáneo, no debounced
+  document.addEventListener('input', actualizarRevelado);
+  document.addEventListener('change', actualizarRevelado);
+  actualizarRevelado();
 
   document.getElementById('flower').addEventListener('click', e => {
     const pet = e.target.closest('.petal');
@@ -727,6 +765,28 @@ function reabrirPortada(){
   const p=document.getElementById('portada');
   p.style.display='flex';
   requestAnimationFrame(()=>p.classList.remove('hide'));
+  actualizarRevelado(); // ya tiene todo lleno: se muestran todas las etapas de una vez
+}
+
+// ===== REVELADO PROGRESIVO DE LA PORTADA =====
+// Cada bloque de datos aparece solo cuando el anterior ya quedó lleno,
+// para que el formulario se sienta como una guía paso a paso.
+function actualizarRevelado(){
+  const p=document.getElementById('portada');
+  if(!p || p.classList.contains('hide')) return; // no gastar trabajo una vez dentro de la app
+  const n=val('nombreImpulsador'), c=val('cedulaImpulsador'), ciudad=getCiudad(), pdv=getPDV();
+  const tieneFoto=!!(fotoIngreso||fotoIngresoURL);
+  mostrarEtapa('stgCedTel', !!n);
+  mostrarEtapa('stgCiudad', !!n && !!c);
+  mostrarEtapa('stgPDV', !!n && !!c && !!ciudad);
+  mostrarEtapa('stgFoto', !!n && !!c && !!ciudad && !!pdv);
+  mostrarEtapa('stgFinal', !!n && !!c && !!ciudad && !!pdv && tieneFoto);
+}
+function mostrarEtapa(id, mostrar){
+  const el=document.getElementById(id); if(!el) return;
+  const visible=el.classList.contains('show');
+  if(mostrar && !visible) el.classList.add('show');
+  else if(!mostrar && visible) el.classList.remove('show');
 }
 
 // Guardado inicial/silencioso (sin overlay ni validación de módulo)
@@ -752,7 +812,7 @@ function leerFotoIngreso(e){
   r.onload=ev=>{ comprimirImagen(ev.target.result, 700, 0.72, data=>{
     fotoIngreso=data; fotoIngresoURL='';
     aplicarPreviewIngreso(data); setAvatar(data); setPersonaFoto(data);
-    persistir(); persistirFotoIngreso();
+    persistir(); persistirFotoIngreso(); actualizarRevelado();
   }); };
   r.readAsDataURL(file);
 }
@@ -842,7 +902,7 @@ function aplicarGestionRemota(data){
   restaurando=true;
   const g=data.gestion||{};
   registroId=data.registroId||g.registroId||''; codigoSesion=data.codigoSesion||g.codigoSesion||'';
-  ['nombreImpulsador','cedulaImpulsador','telefono','ventaMotivoNo','vozNumConsumidores','vozPercepcion','degustacionObservaciones','observacionesGenerales','proximaVisita'].forEach(id=>{ const el=document.getElementById(id); if(el && g[id]!=null) el.value=g[id]; });
+  ['nombreImpulsador','cedulaImpulsador','telefono','ventaMotivoNo','vozNumConsumidores','vozConocimientoPrevio','vozPercepcion','vozAspectoValorado','vozAspectoObjecion','vozCompetenciaMencionada','vozDisposicionRecompra','vozSugerencias','degustacionObservaciones','observacionesGenerales','proximaVisita'].forEach(id=>{ const el=document.getElementById(id); if(el && g[id]!=null) el.value=g[id]; });
   setRadio('ventaRealizada', g.ventaRealizada); setRadio('vozInteraccion', g.vozInteraccion); setRadio('degustacionRealizada', g.degustacionRealizada);
   onVentaChange(); onVozChange(); onDegustChange();
   pendCiudad=g.ciudad||''; pendPDV=g.puntoVenta||'';
@@ -898,7 +958,7 @@ function restaurarSesion(){
   if(!d || !d.loggedIn || !d.campos) return false;
   restaurando = true;
   const g=d.campos;
-  ['nombreImpulsador','cedulaImpulsador','telefono','ventaMotivoNo','vozNumConsumidores','vozPercepcion','degustacionObservaciones','observacionesGenerales','proximaVisita'].forEach(id=>{ const el=document.getElementById(id); if(el&&g[id]!=null) el.value=g[id]; });
+  ['nombreImpulsador','cedulaImpulsador','telefono','ventaMotivoNo','vozNumConsumidores','vozConocimientoPrevio','vozPercepcion','vozAspectoValorado','vozAspectoObjecion','vozCompetenciaMencionada','vozDisposicionRecompra','vozSugerencias','degustacionObservaciones','observacionesGenerales','proximaVisita'].forEach(id=>{ const el=document.getElementById(id); if(el&&g[id]!=null) el.value=g[id]; });
   setRadio('ventaRealizada', g.ventaRealizada); setRadio('vozInteraccion', g.vozInteraccion); setRadio('degustacionRealizada', g.degustacionRealizada);
   onVentaChange(); onVozChange(); onDegustChange();
   pendCiudad = g.ciudad||''; pendPDV = g.puntoVenta||'';
@@ -1161,7 +1221,13 @@ function renderResumen(){
   let vzH='<div class="res-line"><span class="rk">¿Interacción con consumidores?</span><span class="rv">'+(vozR||'—')+'</span></div>';
   if(vozR==='Si'){
     vzH+='<div class="res-line"><span class="rk">Consumidores atendidos</span><span class="rv">'+(escHtml(val('vozNumConsumidores'))||'—')+'</span></div>';
+    vzH+='<div class="res-line"><span class="rk">¿Conocían el producto?</span><span class="rv">'+(escHtml(val('vozConocimientoPrevio'))||'—')+'</span></div>';
     vzH+='<div class="res-line"><span class="rk">Percepción general</span><span class="rv">'+(escHtml(val('vozPercepcion'))||'—')+'</span></div>';
+    vzH+='<div class="res-line"><span class="rk">Mejor valorado</span><span class="rv">'+(escHtml(val('vozAspectoValorado'))||'—')+'</span></div>';
+    vzH+='<div class="res-line"><span class="rk">Más objeciones</span><span class="rv">'+(escHtml(val('vozAspectoObjecion'))||'—')+'</span></div>';
+    if(val('vozCompetenciaMencionada')) vzH+='<div class="res-line"><span class="rk">Competencia mencionada</span><span class="rv">'+escHtml(val('vozCompetenciaMencionada'))+'</span></div>';
+    vzH+='<div class="res-line"><span class="rk">Disposición a recompra</span><span class="rv">'+(escHtml(val('vozDisposicionRecompra'))||'—')+'</span></div>';
+    if(val('vozSugerencias')) vzH+='<div class="res-mini"><b>Sugerencias:</b> '+escHtml(val('vozSugerencias'))+'</div>';
     vzH+=(vozList.length?vozList.map((p,i)=>'<div class="res-mini">'+(i+1)+'. <b>'+(escHtml(p.tipo)||'—')+'</b>'+(p.sku?' · '+escHtml(p.sku):'')+' — '+escHtml(p.comentario||'')+'</div>').join(''):'<div class="res-mini">Sin comentarios registrados</div>');
   }
   h+=secRaw('i-chat','Voz del Consumidor',vzH);
@@ -1192,7 +1258,7 @@ function ln(k,v){ return '<div class="res-line"><span class="rk">'+k+'</span><sp
 function validarModulo(id){
   const e=[];
   if(id==='ventas'){ const v=(document.querySelector('input[name="ventaRealizada"]:checked')||{}).value; if(!v) e.push('¿Se realizó venta?'); if(v==='No'&&!val('ventaMotivoNo')) e.push('Motivo de no venta'); if(v==='Si'){ if(ventasList.length===0) e.push('Agrega al menos un producto vendido'); ventasList.forEach((p,i)=>{ if(!p.sku) e.push('SKU vendido '+(i+1)); if(!p.cantidad||p.cantidad<1) e.push('Cantidad vendido '+(i+1)); }); } }
-  if(id==='voz'){ const v=(document.querySelector('input[name="vozInteraccion"]:checked')||{}).value; if(!v) e.push('¿Tuvo interacción con consumidores?'); if(v==='Si'){ if(!val('vozPercepcion')) e.push('Percepción general'); if(vozList.length===0) e.push('Agrega al menos un comentario'); vozList.forEach((p,i)=>{ if(!p.tipo) e.push('Tipo de comentario '+(i+1)); if(!p.comentario) e.push('Texto del comentario '+(i+1)); }); } }
+  if(id==='voz'){ const v=(document.querySelector('input[name="vozInteraccion"]:checked')||{}).value; if(!v) e.push('¿Tuvo interacción con consumidores?'); if(v==='Si'){ if(!val('vozConocimientoPrevio')) e.push('¿Conocían el producto?'); if(!val('vozPercepcion')) e.push('Percepción general'); if(!val('vozAspectoValorado')) e.push('Aspecto mejor valorado'); if(!val('vozDisposicionRecompra')) e.push('Disposición a recompra'); if(vozList.length===0) e.push('Agrega al menos un comentario'); vozList.forEach((p,i)=>{ if(!p.tipo) e.push('Tipo de comentario '+(i+1)); if(!p.comentario) e.push('Texto del comentario '+(i+1)); }); } }
   if(id==='degustacion'){ const v=(document.querySelector('input[name="degustacionRealizada"]:checked')||{}).value; if(!v) e.push('¿Se realizó degustación?'); if(v==='Si'){ if(degustList.length===0) e.push('Agrega al menos un producto degustado'); degustList.forEach((p,i)=>{ if(!p.sku) e.push('Producto degustado '+(i+1)); if(!p.aceptacion) e.push('Nivel de aceptación '+(i+1)); }); } }
   if(id==='chequeo'){
     chequeoList.forEach((p,i)=>{
@@ -1219,7 +1285,13 @@ function recolectarGestion(){
     ventaProductos: ventasList.map(p=>({categoria:p.categoria,sku:p.sku,cantidad:p.cantidad})),
     vozInteraccion: (document.querySelector('input[name="vozInteraccion"]:checked')||{}).value||'',
     vozNumConsumidores: val('vozNumConsumidores'),
+    vozConocimientoPrevio: val('vozConocimientoPrevio'),
     vozPercepcion: val('vozPercepcion'),
+    vozAspectoValorado: val('vozAspectoValorado'),
+    vozAspectoObjecion: val('vozAspectoObjecion'),
+    vozCompetenciaMencionada: val('vozCompetenciaMencionada'),
+    vozDisposicionRecompra: val('vozDisposicionRecompra'),
+    vozSugerencias: val('vozSugerencias'),
     vozComentarios: vozList.map(p=>({tipo:p.tipo,categoria:p.categoria,sku:p.sku,comentario:p.comentario})),
     degustacionRealizada: (document.querySelector('input[name="degustacionRealizada"]:checked')||{}).value||'',
     degustacionProductos: degustList.map(p=>({categoria:p.categoria,sku:p.sku,muestras:p.muestras,personas:p.personas,aceptacion:p.aceptacion})),
@@ -1275,7 +1347,15 @@ function generarTextoGestion(){
   if(ventaR==='No') t+='   ↳ Motivo: '+(val('ventaMotivoNo')||'-')+'\n';
   if(ventaR==='Si') ventasList.forEach(p=>{ t+='   • '+(p.sku||'-')+'  _x'+(p.cantidad||0)+'_\n'; });
   t+='\n💬 *VOZ DEL CONSUMIDOR:* '+(vozR||'-')+'\n';
-  if(vozR==='Si'){ t+='   ↳ Percepción: '+(val('vozPercepcion')||'-')+'\n'; vozList.forEach(p=>{ t+='   • ['+ (p.tipo||'-') +'] '+(p.comentario||'-')+'\n'; }); }
+  if(vozR==='Si'){
+    t+='   ↳ Conocían el producto: '+(val('vozConocimientoPrevio')||'-')+'\n';
+    t+='   ↳ Percepción: '+(val('vozPercepcion')||'-')+'\n';
+    t+='   ↳ Mejor valorado: '+(val('vozAspectoValorado')||'-')+' · Más objeciones: '+(val('vozAspectoObjecion')||'-')+'\n';
+    if(val('vozCompetenciaMencionada')) t+='   ↳ Competencia mencionada: '+val('vozCompetenciaMencionada')+'\n';
+    t+='   ↳ Disposición a recompra: '+(val('vozDisposicionRecompra')||'-')+'\n';
+    if(val('vozSugerencias')) t+='   ↳ Sugerencias: '+val('vozSugerencias')+'\n';
+    vozList.forEach(p=>{ t+='   • ['+ (p.tipo||'-') +'] '+(p.comentario||'-')+'\n'; });
+  }
   t+='\n🎁 *DEGUSTACIONES:* '+(dgR||'-')+'\n';
   if(dgR==='Si') degustList.forEach(p=>{ t+='   • '+(p.sku||'-')+'  _'+(p.muestras||0)+' muestras, '+(p.personas||0)+' personas_ → '+(p.aceptacion||'-')+'\n'; });
   if(chequeoList.length){ t+='\n🏷️ *CHEK DE PRECIOS*\n'; chequeoList.forEach(c=>{ const r=rangoChequeo(c); const tag=r?(r.ok?'✅ dentro de rango':'⚠️ fuera de rango'):''; t+='   • '+(c.sku||'-')+(c.tipoPrecio?' ('+c.tipoPrecio+')':'')+'  $'+fmt(c.precio||0)+(tag?' _('+tag+')_':'')+'\n'; }); }
