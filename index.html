@@ -271,42 +271,40 @@
 <div class="portada" id="portada">
   <svg class="portada-bg" viewBox="0 0 390 844" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
-      <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#f6b352"/><stop offset=".45" stop-color="#d1571f"/><stop offset="1" stop-color="#5c1f4e"/>
+      <linearGradient id="sky2" x1="0" y1="0" x2="0.2" y2="1">
+        <stop offset="0" stop-color="#f9a94a"/><stop offset=".38" stop-color="#e2622a"/><stop offset=".7" stop-color="#9c3172"/><stop offset="1" stop-color="#45205a"/>
       </linearGradient>
-      <radialGradient id="glow1" cx="50%" cy="30%" r="55%">
-        <stop offset="0" stop-color="#ffe9b0" stop-opacity=".55"/><stop offset="1" stop-color="#ffe9b0" stop-opacity="0"/>
+      <radialGradient id="blob1" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#ffd27a" stop-opacity=".5"/><stop offset="1" stop-color="#ffd27a" stop-opacity="0"/>
       </radialGradient>
-      <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#fff3d6" stop-opacity=".38"/><stop offset="1" stop-color="#fff3d6" stop-opacity="0"/>
-      </linearGradient>
-      <linearGradient id="stage1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a2b57"/><stop offset="1" stop-color="#551d47"/></linearGradient>
-      <linearGradient id="stage2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#551d47"/><stop offset="1" stop-color="#33143a"/></linearGradient>
+      <radialGradient id="blob2" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#ff6f9c" stop-opacity=".42"/><stop offset="1" stop-color="#ff6f9c" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="blob3" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#8b3fd1" stop-opacity=".4"/><stop offset="1" stop-color="#8b3fd1" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="blob4" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#fff3d6" stop-opacity=".3"/><stop offset="1" stop-color="#fff3d6" stop-opacity="0"/>
+      </radialGradient>
     </defs>
     <rect width="390" height="844" fill="url(#sky2)"/>
-    <circle cx="195" cy="220" r="220" fill="url(#glow1)"/>
-    <polygon points="140,0 250,0 335,520 55,520" fill="url(#beam)"/>
-    <polygon points="55,0 130,0 30,470 -70,470" fill="url(#beam)" opacity=".6"/>
-    <polygon points="260,0 335,0 460,470 360,470" fill="url(#beam)" opacity=".6"/>
-    <g fill="#ffd873">
-      <circle class="spark" cx="66" cy="150" r="5"/><circle class="spark" cx="316" cy="118" r="4" style="animation-delay:.8s"/>
-      <rect class="spark" x="252" y="198" width="8" height="8" rx="2" transform="rotate(20 256 202)" style="animation-delay:1.6s"/>
-      <circle class="spark" cx="332" cy="258" r="3.5" style="animation-delay:.4s"/>
-    </g>
-    <g fill="#ff8fb0">
-      <rect class="spark" x="52" y="258" width="7" height="7" rx="2" transform="rotate(-15 55 262)" style="animation-delay:1.1s"/>
-      <circle class="spark" cx="148" cy="86" r="3.5" style="animation-delay:1.9s"/>
-      <circle class="spark" cx="230" cy="70" r="3" style="animation-delay:2.3s"/>
-    </g>
-    <path fill="url(#stage2)" d="M0 700 L390 700 L390 844 L0 844 Z"/>
-    <path fill="url(#stage1)" d="M0 700 L390 700 L360 654 L30 654 Z"/>
-    <rect x="30" y="654" width="330" height="10" fill="#8f3866"/>
-    <g fill="none" stroke="#ffe9c2" stroke-width="3" stroke-linecap="round" opacity=".85">
-      <circle cx="195" cy="588" r="16"/>
-      <path d="M195 604 v24"/>
-      <path d="M175 604 a20 20 0 0040 0"/>
-      <path d="M195 628 v12"/>
-      <path d="M182 640 h26"/>
+    <!-- manchas de luz abstractas (gradient mesh), sin figuras literales -->
+    <circle cx="70" cy="150" r="220" fill="url(#blob1)"/>
+    <circle cx="345" cy="300" r="260" fill="url(#blob2)"/>
+    <circle cx="40" cy="600" r="270" fill="url(#blob3)"/>
+    <circle cx="300" cy="730" r="230" fill="url(#blob4)"/>
+    <!-- trazo de impulso: una curva ascendente estilizada, sugiere movimiento sin ser literal -->
+    <path d="M15 540 C105 500, 145 580, 225 440 C275 355, 315 395, 368 305" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-opacity=".32"/>
+    <circle cx="368" cy="305" r="6" fill="#fff" opacity=".5"/>
+    <!-- partículas suaves -->
+    <g fill="#fff" opacity=".6">
+      <circle class="spark" cx="66" cy="110" r="3"/>
+      <circle class="spark" cx="300" cy="80" r="2.5" style="animation-delay:.6s"/>
+      <circle class="spark" cx="345" cy="210" r="2" style="animation-delay:1.2s"/>
+      <circle class="spark" cx="45" cy="360" r="2.5" style="animation-delay:1.8s"/>
+      <circle class="spark" cx="255" cy="460" r="2" style="animation-delay:.3s"/>
+      <circle class="spark" cx="110" cy="540" r="2.5" style="animation-delay:2.1s"/>
+      <circle class="spark" cx="330" cy="620" r="2" style="animation-delay:1.5s"/>
     </g>
   </svg>
   <div class="portada-content">
@@ -638,7 +636,7 @@
 
 <script>
 // Pega aquí la URL de tu Web App (Implementar > Nueva implementación) del Apps Script de Codigo_Impulso.md
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyP-_AXO0Wfppw3b29b0oY8Tao-yhChWwrsdCHqoKSutHY_uszgMbTk0EYIfB9r8g86/exec';
+const GAS_URL = 'PEGA_AQUI_LA_URL_DE_TU_WEB_APP_DE_APPS_SCRIPT';
 
 const LS_KEY = 'impulso_session_v1';
 const LS_FOTO_INGRESO = 'impulso_foto_ingreso_v1';
@@ -736,7 +734,10 @@ function onIdentChange(){
 }
 
 // ===== PORTADA =====
+let registroPromise = null; // guarda la promesa del guardado inicial para poder esperarla
+let comenzando = false; // evita doble-tap sobre "Comenzar"
 function comenzar(){
+  if(comenzando) return;
   const n=val('nombreImpulsador'), c=val('cedulaImpulsador'), ciudad=getCiudad(), pdv=getPDV();
   if(!n || !c || !ciudad || !pdv || !(fotoIngreso||fotoIngresoURL)){
     const f=document.getElementById('portadaForm');
@@ -744,6 +745,7 @@ function comenzar(){
     document.getElementById('portadaErr').style.display='block';
     return;
   }
+  comenzando = true;
   document.getElementById('portadaErr').style.display='none';
   onIdentChange();
   const p=document.getElementById('portada');
@@ -754,11 +756,15 @@ function comenzar(){
   document.getElementById('btnComenzarTxt').textContent='Comenzar';
   if(!eraEdicion) current='ventas';
   persistir(); persistirFotoIngreso();
-  guardarSilencioso();
+  // Se guarda la promesa: guardarModulo() la espera antes de guardar cualquier
+  // módulo, así nunca manda un registroId vacío que termine creando una fila
+  // duplicada (síntoma real detrás del "la foto no queda en los datos").
+  registroPromise = guardarSilencioso();
   actualizarRecapIngreso();
   renderNav();
 }
 function reabrirPortada(){
+  comenzando = false;
   editandoIngreso = true;
   document.getElementById('btnComenzarTxt').textContent='Guardar cambios';
   clearTimeout(window._portadaTimer);
@@ -1308,6 +1314,10 @@ function recolectarGestion(){
 async function guardarModulo(id, finalizar){
   const errs=validarModulo(id);
   if(errs.length>0){ alert('Completa antes de guardar:\n\n• '+errs.join('\n• ')); return; }
+  // Si el guardado inicial (creación del registro) todavía está en vuelo, se
+  // espera aquí: si no, este guardado podría salir con registroId vacío y el
+  // backend crearía una fila nueva en vez de actualizar la existente.
+  if(registroPromise){ try{ await registroPromise; }catch(e){} }
   const gestion=recolectarGestion();
   saved[id]=true;
   gestion.modulosGuardados=Object.keys(saved).filter(k=>saved[k]).join(', ');
