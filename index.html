@@ -344,7 +344,6 @@
         <label class="foto-ingreso" id="fotoIngresoBox">
           <input type="file" id="fileIngreso" accept="image/*" capture="user" style="display:none">
           <span class="fi-ic" id="fiIcon"><svg class="icon icon-lg"><use href="#i-camera"/></svg></span>
-          <img class="fi-prev" id="fotoIngresoPrev" style="display:none" alt="">
           <span class="fi-txt"><b id="fiTitle">Tu selfie</b><span id="fiSub">Toca para tomar la foto (cámara frontal)</span></span>
         </label>
       </div>
@@ -371,7 +370,6 @@
     <div class="topbar-logo"><svg class="icon icon-lg"><use href="#i-zap"/></svg></div>
     <div class="topbar-brand"><b>Impulso PQP</b><span>Activación y consumo en el PDV</span></div>
     <div class="avatar-bubble" id="avatarBubble" onclick="abrirPersona()" title="Mi información" style="width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.55);overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer">
-      <img id="avatarImg" alt="" style="display:none;width:100%;height:100%;object-fit:cover">
       <svg class="icon icon-lg" id="avatarIcon"><use href="#i-user"/></svg>
     </div>
   </div>
@@ -392,8 +390,7 @@
         <div class="card-head-text"><div class="card-title">Ingreso</div><div class="card-sub">Datos registrados al iniciar tu jornada</div></div>
       </div>
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
-        <img id="recapFoto" src="" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;display:none;border:3px solid var(--blue-soft)">
-        <div id="recapFotoPh" style="width:64px;height:64px;border-radius:50%;background:var(--navy-grad);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0"><svg class="icon icon-lg"><use href="#i-user"/></svg></div>
+        <div style="width:64px;height:64px;border-radius:50%;background:var(--navy-grad);display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0"><svg class="icon icon-lg"><use href="#i-user"/></svg></div>
         <div style="flex:1;min-width:0"><b id="recapNombre" style="font-family:'Poppins';font-size:16px;display:block">—</b><span id="recapDoc" style="font-size:13px;color:var(--ink-soft)">—</span></div>
       </div>
       <div class="sum-grid">
@@ -585,7 +582,7 @@
 
 <!-- BOTTOM NAV -->
 <nav class="bottomnav">
-  <div class="nav-side left"><button class="nav-icon" id="btnPersona" type="button" aria-label="Mi información"><img id="navAvatarImg" alt="" style="display:none"><svg class="icon" id="navAvatarIcon"><use href="#i-user"/></svg></button></div>
+  <div class="nav-side left"><button class="nav-icon" id="btnPersona" type="button" aria-label="Mi información"><svg class="icon" id="navAvatarIcon"><use href="#i-user"/></svg></button></div>
   <div class="fab-slot"><button class="fab" id="fab" type="button" aria-label="Navegar módulos"><span class="fab-ic"><svg class="icon icon-lg"><use href="#i-grid"/></svg></span></button></div>
   <div class="nav-side right"></div>
 </nav>
@@ -671,7 +668,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('heroDate').textContent = ahora.toLocaleDateString('es-CO',{weekday:'long',day:'numeric',month:'long'});
 
   cargarParametrizacion();
-  capturarUbicacion(); // GPS automático al abrir la portada, sin esperar ningún clic
+  // La ubicación NO se pide sola al cargar: se dispara desde comenzar(), como
+  // parte del toque real en "Comenzar" (algunos navegadores/apps embebidas
+  // -como el navegador interno de WhatsApp- bloquean el permiso si no viene
+  // de un gesto explícito del usuario).
 
   document.getElementById('nombreImpulsador').addEventListener('input', onIdentChange);
   document.getElementById('cedulaImpulsador').addEventListener('input', onIdentChange);
@@ -748,6 +748,7 @@ function comenzar(){
   comenzando = true;
   document.getElementById('portadaErr').style.display='none';
   onIdentChange();
+  capturarUbicacion(); // se dispara aquí, como parte del toque real de "Comenzar" (no automático)
   const p=document.getElementById('portada');
   p.classList.add('hide');
   window._portadaTimer = setTimeout(()=>{ p.style.display='none'; }, 650);
@@ -847,19 +848,21 @@ function comprimirImagen(dataURL, maxLado, calidad, cb){
   img.onerror=function(){ cb(dataURL); };
   img.src=dataURL;
 }
+// La selfie NUNCA se pinta como <img> en la interfaz (en ningún lugar: topbar,
+// nav inferior, tarjeta de Ingreso) — solo un ícono genérico de persona. Igual
+// se sube a Drive y su URL queda guardada en Sheets para auditoría; el
+// parámetro "data" ya no se usa para mostrar nada, solo para confirmar que sí
+// se capturó (por eso la firma se mantiene, para no tocar quien la invoca).
 function aplicarPreviewIngreso(data){
-  const fp=document.getElementById('fotoIngresoPrev');
-  if(fp){ fp.src=data; fp.style.display='block'; document.getElementById('fiIcon').style.display='none'; document.getElementById('fotoIngresoBox').classList.add('has'); document.getElementById('fiTitle').textContent='Selfie lista'; document.getElementById('fiSub').textContent='Toca para volver a tomar'; }
-  const rf=document.getElementById('recapFoto'), rph=document.getElementById('recapFotoPh');
-  if(rf){ rf.src=data; rf.style.display='block'; if(rph) rph.style.display='none'; }
+  document.getElementById('fiIcon').innerHTML='<svg class="icon icon-lg"><use href="#i-check"/></svg>';
+  document.getElementById('fotoIngresoBox').classList.add('has');
+  document.getElementById('fiTitle').textContent='Selfie lista';
+  document.getElementById('fiSub').textContent='Toca para volver a tomar';
 }
 function mostrarPreviewDegust(src){ document.getElementById('imgDegust').src=src; document.getElementById('defDegust').style.display='none'; document.getElementById('prevDegust').style.display='block'; document.getElementById('uploadDegust').classList.add('has'); }
 function quitarFotoDegust(){ degustacionFoto=''; degustacionFotoURL=''; document.getElementById('fileDegust').value=''; document.getElementById('defDegust').style.display='block'; document.getElementById('prevDegust').style.display='none'; document.getElementById('uploadDegust').classList.remove('has'); persistir(); persistirFotoDegust(); }
-function setAvatar(src){
-  ['avatarImg','navAvatarImg'].forEach(id=>{ const im=document.getElementById(id); if(im){ im.src=src; im.style.display='block'; } });
-  ['avatarIcon','navAvatarIcon'].forEach(id=>{ const ic=document.getElementById(id); if(ic) ic.style.display='none'; });
-}
-function setPersonaFoto(src){ /* reservado para futura foto en el panel persona */ }
+function setAvatar(src){ /* intencional: nunca se pinta la selfie como <img>, siempre queda el ícono genérico */ }
+function setPersonaFoto(src){ /* idem: el panel persona tampoco pinta la selfie */ }
 
 // ===== PANEL PERSONA =====
 function abrirPersona(){
@@ -1015,6 +1018,10 @@ function capturarUbicacion(){
     if(chip) chip.classList.add('has');
     if(t) t.textContent='Ubicación capturada'; if(s) s.textContent='Precisión aproximada: '+ubicacion.acc+' m';
     actualizarRecapIngreso(); persistir();
+    // El GPS puede resolver después del primer guardado (ya no es automático,
+    // depende del gesto de "Comenzar"); esto empuja la coordenada ya resuelta
+    // al Sheet aunque el primer guardado silencioso haya salido sin ella.
+    if(comenzando || registroId) guardarSilencioso();
   }, err => {
     if(t) t.textContent='No se pudo obtener la ubicación';
     if(s) s.textContent = err.code===1 ? 'Permiso denegado. Actívalo en el navegador.' : 'Intenta de nuevo en un lugar abierto.';
